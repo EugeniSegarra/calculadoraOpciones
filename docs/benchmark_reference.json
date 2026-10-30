@@ -1,0 +1,300 @@
+{
+  "date": "2026-10-30",
+  "optionslab_steps": 400,
+  "quantlib_version": "1.44",
+  "quantlib_time_steps": 1600,
+  "quantlib_space_points": 3200,
+  "cases": [
+    {
+      "case": "American put",
+      "inputs": {
+        "spot": 100,
+        "strike": 100,
+        "days": 365,
+        "rate": 0.05,
+        "volatility": 0.2,
+        "kind": "put",
+        "style": "american",
+        "dividend_yield": 0,
+        "dividends": []
+      },
+      "optionslab": {
+        "price": 6.090202941876249,
+        "delta": -0.41106075964365446,
+        "gamma": 0.022989189147308704,
+        "theta": -0.006131572285341527,
+        "vega": 0.37486789297756395,
+        "rho": -0.30215829535347183
+      },
+      "quantlib": {
+        "price": 6.089949409070739,
+        "delta": -0.4110419363849207,
+        "gamma": 0.022988402731706287,
+        "theta": -0.006131433956063336
+      },
+      "absolute_error": {
+        "price": 0.00025353280550977075,
+        "delta": 1.8823258733757786e-05,
+        "gamma": 7.864156024162128e-07,
+        "theta": 1.3832927819174e-07
+      }
+    },
+    {
+      "case": "American call continuous q",
+      "inputs": {
+        "spot": 100,
+        "strike": 100,
+        "days": 365,
+        "rate": 0.05,
+        "volatility": 0.2,
+        "kind": "call",
+        "style": "american",
+        "dividend_yield": 0.06,
+        "dividends": []
+      },
+      "optionslab": {
+        "price": 7.256553323196416,
+        "delta": 0.5079148040945304,
+        "gamma": 0.0201891386231073,
+        "theta": -0.008676945902375645,
+        "vega": 0.3797938246562538,
+        "rho": 0.3389065213227127
+      },
+      "quantlib": {
+        "price": 7.256509329096774,
+        "delta": 0.507907434445929,
+        "gamma": 0.02018870212690353,
+        "theta": -0.008676732943780654
+      },
+      "absolute_error": {
+        "price": 4.399409964150891e-05,
+        "delta": 7.369648601374124e-06,
+        "gamma": 4.364962037720077e-07,
+        "theta": 2.12958594991014e-07
+      }
+    },
+    {
+      "case": "American call negative rate",
+      "inputs": {
+        "spot": 100,
+        "strike": 100,
+        "days": 365,
+        "rate": -0.02,
+        "volatility": 0.2,
+        "kind": "call",
+        "style": "american",
+        "dividend_yield": 0,
+        "dividends": []
+      },
+      "optionslab": {
+        "price": 7.207135332223415,
+        "delta": 0.5119962851931409,
+        "gamma": 0.020742008280829616,
+        "theta": -0.008954936417600302,
+        "vega": 0.3963459320135376,
+        "rho": 0.3475461901912169
+      },
+      "quantlib": {
+        "price": 7.207114536129835,
+        "delta": 0.5119906962361703,
+        "gamma": 0.020741692084804295,
+        "theta": -0.008954792644414015
+      },
+      "absolute_error": {
+        "price": 2.0796093579633634e-05,
+        "delta": 5.588956970559167e-06,
+        "gamma": 3.161960253211804e-07,
+        "theta": 1.437731862868885e-07
+      }
+    },
+    {
+      "case": "ITM American put",
+      "inputs": {
+        "spot": 80,
+        "strike": 100,
+        "days": 90,
+        "rate": 0.07,
+        "volatility": 0.35,
+        "kind": "put",
+        "style": "american",
+        "dividend_yield": 0,
+        "dividends": []
+      },
+      "optionslab": {
+        "price": 20.089127955463802,
+        "delta": -0.9393759301836071,
+        "gamma": 0.021288900592830725,
+        "theta": -0.004598643469805417,
+        "vega": 0.041053779435866744,
+        "rho": -0.0435107164221904
+      },
+      "quantlib": {
+        "price": 20.088907125438194,
+        "delta": -0.9393677290948655,
+        "gamma": 0.021290076883295126,
+        "theta": -0.004600074949424019
+      },
+      "absolute_error": {
+        "price": 0.00022083002560790987,
+        "delta": 8.201088741555118e-06,
+        "gamma": 1.1762904644010974e-06,
+        "theta": 1.4314796186014334e-06
+      }
+    },
+    {
+      "case": "American call two dividends",
+      "inputs": {
+        "spot": 120,
+        "strike": 100,
+        "days": 730,
+        "rate": 0.03,
+        "volatility": 0.5,
+        "kind": "call",
+        "style": "american",
+        "dividend_yield": 0,
+        "dividends": [
+          [
+            180,
+            5
+          ],
+          [
+            545,
+            5
+          ]
+        ]
+      },
+      "optionslab": {
+        "price": 38.91394972759684,
+        "delta": 0.725821041752094,
+        "gamma": 0.004283603058971061,
+        "theta": -0.0250849938756919,
+        "vega": 0.5352347280486569,
+        "rho": 0.7613067890730463
+      },
+      "quantlib": {
+        "price": 38.91403228908069,
+        "delta": 0.72582286335114,
+        "gamma": 0.004283555064080522,
+        "theta": -0.025084768369141433
+      },
+      "absolute_error": {
+        "price": 8.256148385044071e-05,
+        "delta": 1.821599045936928e-06,
+        "gamma": 4.7994890539290735e-08,
+        "theta": 2.255065504677689e-07
+      }
+    },
+    {
+      "case": "American put cash dividend",
+      "inputs": {
+        "spot": 100,
+        "strike": 100,
+        "days": 365,
+        "rate": 0.05,
+        "volatility": 0.2,
+        "kind": "put",
+        "style": "american",
+        "dividend_yield": 0,
+        "dividends": [
+          [
+            182,
+            5
+          ]
+        ]
+      },
+      "optionslab": {
+        "price": 8.441619559404295,
+        "delta": -0.5071441815085338,
+        "gamma": 0.02251830424177174,
+        "theta": -0.004235230035182097,
+        "vega": 0.3789996258420114,
+        "rho": -0.3931548216780989
+      },
+      "quantlib": {
+        "price": 8.441400234350233,
+        "delta": -0.507138521595531,
+        "gamma": 0.02251897532414252,
+        "theta": -0.004235705329132433
+      },
+      "absolute_error": {
+        "price": 0.00021932505406141445,
+        "delta": 5.659913002831196e-06,
+        "gamma": 6.710823707775648e-07,
+        "theta": 4.7529395033607535e-07
+      }
+    },
+    {
+      "case": "European call cash dividend",
+      "inputs": {
+        "spot": 100,
+        "strike": 100,
+        "days": 365,
+        "rate": 0.05,
+        "volatility": 0.2,
+        "kind": "call",
+        "style": "european",
+        "dividend_yield": 0,
+        "dividends": [
+          [
+            182,
+            5
+          ]
+        ]
+      },
+      "optionslab": {
+        "price": 7.773325329683056,
+        "delta": 0.5393212165819555,
+        "gamma": 0.020343873434912396,
+        "theta": -0.01747045069426878,
+        "vega": 0.38737387583768434,
+        "rho": 0.44939677672397593
+      },
+      "quantlib": {
+        "price": 7.773345527757831,
+        "delta": 0.5393223950549644,
+        "gamma": 0.02034384048295381,
+        "theta": -0.017470446015007374
+      },
+      "absolute_error": {
+        "price": 2.0198074775379382e-05,
+        "delta": 1.1784730088448825e-06,
+        "gamma": 3.2951958585381025e-08,
+        "theta": 4.679261405432511e-09
+      }
+    },
+    {
+      "case": "American put 4d 1pct IV",
+      "inputs": {
+        "spot": 100,
+        "strike": 100,
+        "days": 4,
+        "rate": 0.05,
+        "volatility": 0.01,
+        "kind": "put",
+        "style": "american",
+        "dividend_yield": 0,
+        "dividends": []
+      },
+      "optionslab": {
+        "price": 0.025276834228936406,
+        "delta": -0.4113580228558617,
+        "gamma": 5.383433099858108,
+        "theta": -0.0017360619012008179,
+        "vega": 0.03665778559881098,
+        "rho": -0.0022783061559490322
+      },
+      "quantlib": {
+        "price": 0.025275322097436003,
+        "delta": -0.4113101899275413,
+        "gamma": 5.382772274027525,
+        "theta": -0.001735812113071737
+      },
+      "absolute_error": {
+        "price": 1.512131500402969e-06,
+        "delta": 4.783292832039043e-05,
+        "gamma": 0.0006608258305824677,
+        "theta": 2.497881290807868e-07
+      }
+    }
+  ]
+}

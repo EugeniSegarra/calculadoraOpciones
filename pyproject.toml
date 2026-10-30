@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calculadora-opciones"
+version = "1.0.0"
+description = "Calculadora de posiciones, valoración y escenarios de opciones vanilla"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26,<3", "scipy>=1.11,<2", "tzdata>=2024.1; sys_platform == 'win32'"]
+
+[project.scripts]
+optionslab = "optionslab.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["optionslab*"]
+
+[tool.setuptools.package-data]
+optionslab = ["static/*.html", "static/*.css", "static/*.js"]

@@ -1,0 +1,50 @@
+{
+  "name": "Ejemplo hipotético · Bull call spread (débito)",
+  "underlying": "DEMO",
+  "currency": "EUR",
+  "valuation_date": "2026-10-30",
+  "spot": 100.0,
+  "rate": 0.03,
+  "dividend_yield": 0.0,
+  "cash_adjustment": 0.0,
+  "cash_dividends": [],
+  "legs": [
+    {
+      "id": "leg-1",
+      "label": "Compra call 100",
+      "kind": "call",
+      "quantity": 1,
+      "multiplier": 100.0,
+      "strike": 100.0,
+      "expiry": "2027-01-28",
+      "volatility": 0.25,
+      "style": "european",
+      "mark_price": null,
+      "bid": null,
+      "ask": null,
+      "entry_fee": 0.0,
+      "exit_fee": 0.0,
+      "quote_date": null,
+      "entry_price": 5.3083271286142235
+    },
+    {
+      "id": "leg-2",
+      "label": "Venta call 105",
+      "kind": "call",
+      "quantity": -1,
+      "multiplier": 100.0,
+      "strike": 105.0,
+      "expiry": "2027-01-28",
+      "volatility": 0.25,
+      "style": "european",
+      "mark_price": null,
+      "bid": null,
+      "ask": null,
+      "entry_fee": 0.0,
+      "exit_fee": 0.0,
+      "quote_date": null,
+      "entry_price": 3.2187955619775437
+    }
+  ],
+  "schema_version": 1
+}

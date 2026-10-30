@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>OptionsLab · Control de opciones</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="page-header">
+      <div>
+        <p class="eyebrow"><span class="brand-mark" aria-hidden="true">∑</span> OptionsLab <span class="eyebrow-divider">/</span> Valoración y escenarios</p>
+        <h1>Control de opciones</h1>
+        <p class="intro">Prima de entrada, precios observados y riesgo de la posición a lo largo del tiempo.</p>
+      </div>
+      <div class="header-actions">
+        <span class="status-chip"><span aria-hidden="true"></span> Datos manuales · sin conexión de mercado</span>
+        <div class="button-row">
+          <button type="button" id="import-button" class="button secondary">Importar JSON</button>
+          <button type="button" id="save-button" class="button secondary">Guardar posición</button>
+          <input type="file" id="import-file" accept="application/json,.json" hidden>
+        </div>
+      </div>
+    </header>
+
+    <div id="error-banner" class="notice error" role="alert" hidden></div>
+    <div id="status-message" class="notice info" role="status" aria-live="polite" hidden></div>
+    <div id="loading" class="loading-panel" role="status">Cargando posición de ejemplo…</div>
+
+    <form id="workspace" hidden>
+      <section class="panel market-panel" aria-labelledby="market-heading">
+        <div class="section-heading">
+          <div><p class="section-index">01 / Mercado de referencia</p><h2 id="market-heading">Un subyacente, una divisa</h2></div>
+          <span class="quiet-label">Convención temporal ACT/365 · fechas de calendario</span>
+        </div>
+        <div class="market-grid">
+          <label class="field wide">Nombre de la posición<input id="portfolio-name" type="text" maxlength="100" required></label>
+          <label class="field">Subyacente<input id="underlying" type="text" maxlength="32" required></label>
+          <label class="field">Divisa<input id="currency" type="text" maxlength="3" pattern="[A-Za-z]{3}" title="Código de divisa de tres letras, por ejemplo EUR" required></label>
+          <label class="field">Fecha base<input id="valuation-date" type="date" required></label>
+          <label class="field">Spot actual<input id="spot" type="number" min="0" step="any" required></label>
+          <label class="field">Tipo continuo, %<input id="rate" type="number" step="any" required></label>
+          <label class="field">Dividendo continuo q, %<input id="dividend-yield" type="number" min="0" step="any" required></label>
+        </div>
+        <details class="cash-details">
+          <summary>Dividendos discretos y caja registrada</summary>
+          <div class="cash-grid">
+            <div>
+              <div class="small-heading"><h3>Calendario de dividendos</h3><button type="button" id="add-dividend" class="button text-button">+ Dividendo</button></div>
+              <p class="help">Fecha ex-dividendo y efectivo por acción. Se usa para valorar opciones y es excluyente con q continuo.</p>
+              <div id="dividend-rows" class="dividend-rows"></div>
+            </div>
+            <div>
+              <label class="field">Caja neta registrada, en divisa de la posición<input id="cash-adjustment" type="number" step="any" value="0" required></label>
+              <p class="help">Cobros positivos y pagos negativos ya realizados desde la entrada: dividendos, financiación u otros ajustes. Los precios de entrada y las comisiones tienen sus propios campos; no los dupliques aquí.</p>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel legs-panel" aria-labelledby="legs-heading">
+        <div class="section-heading">
+          <div><p class="section-index">02 / Composición</p><h2 id="legs-heading">Patas de la posición <span id="leg-count" class="count-chip">0</span></h2></div>
+          <div class="template-controls">
+            <label class="sr-only" for="template-select">Estructura predefinida</label>
+            <select id="template-select"><option value="">Cargar estructura…</option></select>
+            <button type="button" id="template-button" class="button secondary">Cargar</button>
+            <button type="button" id="add-leg" class="button secondary">+ Pata</button>
+          </div>
+        </div>
+        <p class="section-description">Cantidad firmada: positiva = compra; negativa = venta. Primas y marcas por unidad de subyacente. Las plantillas sustituyen las patas por un ejemplo con primas teóricas.</p>
+        <div class="table-scroll" tabindex="0" aria-label="Editor de patas, desplazamiento horizontal disponible">
+          <table class="legs-table">
+            <thead><tr><th scope="col">Identificación</th><th scope="col">Tipo</th><th scope="col">Cantidad</th><th scope="col">Multiplicador</th><th scope="col">Strike</th><th scope="col">Vencimiento</th><th scope="col">IV, %</th><th scope="col">Prima entrada</th><th scope="col">Marca actual</th><th scope="col"><span class="sr-only">Acciones</span></th></tr></thead>
+            <tbody id="legs-body"></tbody>
+          </table>
+        </div>
+        <p class="table-footnote">Una marca vacía significa «no disponible». La IV se infiere de una marca actual, nunca de una prima histórica.</p>
+      </section>
+
+      <section class="panel scenario-panel" aria-labelledby="scenario-heading">
+        <div class="section-heading">
+          <div><p class="section-index">03 / Revaloración</p><h2 id="scenario-heading">Escenario y paso del tiempo</h2></div>
+          <div class="button-row"><span id="dirty-indicator" class="dirty-indicator" role="status">Pendiente de calcular</span><button type="submit" class="button primary analyze-button">Calcular posición</button></div>
+        </div>
+        <div class="scenario-grid">
+          <label class="field">Fecha del escenario<input id="scenario-date" type="date" required></label>
+          <label class="field">Spot del escenario<input id="scenario-spot" type="number" min="0" step="any" required></label>
+          <label class="field">Desplazamiento IV, pp<input id="vol-shift" type="number" step="any" value="0" required></label>
+          <label class="field">Desplazamiento tipo, pb<input id="rate-shift" type="number" step="any" value="0" required></label>
+          <label class="field">Caja adicional escenario<input id="scenario-cash" type="number" step="any" value="0" required></label>
+          <label class="field">Spot mínimo del gráfico<input id="price-min" type="number" min="0" step="any" required></label>
+          <label class="field">Spot máximo del gráfico<input id="price-max" type="number" min="0" step="any" required></label>
+        </div>
+        <div class="time-slider-row">
+          <label for="days-slider">Días desde fecha base <strong id="days-label">0</strong></label>
+          <input id="days-slider" type="range" min="0" max="90" step="1" value="0">
+          <span id="horizon-limit" class="quiet-label"></span>
+        </div>
+        <p class="help">La IV se desplaza en puntos porcentuales y el tipo en puntos básicos. Se mantiene la IV de cada pata al cambiar el spot. La caja adicional no se calcula automáticamente: incluye aquí rentas o costes futuros que quieras incorporar. El horizonte termina en el primer vencimiento.</p>
+      </section>
+    </form>
+
+    <section id="results" class="results" aria-labelledby="results-heading" hidden>
+      <div class="results-heading"><div><p class="section-index">04 / Lectura de la posición</p><h2 id="results-heading">Valor, P&amp;L y sensibilidades</h2><p id="results-asof" class="quiet-label"></p></div><button type="button" id="csv-button" class="button secondary">Exportar resultados CSV</button></div>
+      <div id="results-stale" class="notice info" role="status" hidden>Estos resultados corresponden al último cálculo. Hay datos modificados: recalcula antes de utilizarlos.</div>
+      <div id="summary-cards" class="summary-grid"></div>
+
+      <div class="analysis-grid">
+        <section class="panel chart-panel" aria-labelledby="chart-heading">
+          <div class="section-heading chart-heading"><div><h3 id="chart-heading">P&amp;L por precio del subyacente</h3><p id="chart-subtitle" class="help">Revaloración completa de las patas vivas.</p></div><div class="chart-tabs" role="tablist" aria-label="Tipo de gráfico"><button type="button" id="tab-price" class="chart-tab active" role="tab" aria-selected="true">Precio</button><button type="button" id="tab-time" class="chart-tab" role="tab" aria-selected="false">Tiempo</button></div></div>
+          <div id="chart-legend" class="chart-legend"></div>
+          <div id="chart-container" class="chart-container"></div>
+          <p id="chart-readout" class="chart-readout" aria-live="off">Desplaza el cursor sobre el gráfico para consultar valores.</p>
+          <p class="chart-caption">Son escenarios condicionados a tus supuestos, no previsiones de rentabilidad ni probabilidades.</p>
+        </section>
+
+        <section class="panel greeks-panel" aria-labelledby="greeks-heading">
+          <div class="section-heading"><div><h3 id="greeks-heading">Sensibilidades agregadas</h3><p class="help">Revaloración local · posición completa</p></div></div>
+          <div id="greeks-table"></div>
+          <p class="help greek-note">Delta equivale a unidades del subyacente. Gamma mide el cambio de delta por unidad de spot. Theta es por día natural; vega y rho, por un punto porcentual. No extrapoles estas aproximaciones a movimientos grandes.</p>
+        </section>
+      </div>
+
+      <div class="risk-grid">
+        <section class="panel" aria-labelledby="risk-heading"><div class="section-heading"><div><h3 id="risk-heading">Payoff a vencimiento común</h3><p class="help">Extremos globales, incluidos los precios fuera del gráfico</p></div></div><div id="risk-content"></div></section>
+        <section class="panel assumptions-panel" aria-labelledby="warnings-heading"><div class="section-heading"><div><h3 id="warnings-heading">Supuestos y límites activos</h3><p class="help">Condiciones que cambian la lectura del resultado</p></div></div><div id="warnings-content"></div></section>
+      </div>
+
+      <details class="panel detail-panel"><summary>Desglose por pata: valor, P&amp;L y griegas</summary><div class="table-scroll"><table class="results-table"><thead><tr><th scope="col">Pata</th><th scope="col">Precio modelo</th><th scope="col">Marca actual</th><th scope="col">P&amp;L modelo</th><th scope="col">P&amp;L observado</th><th scope="col">Delta</th><th scope="col">Gamma</th><th scope="col">Theta/día</th><th scope="col">Vega/pp</th><th scope="col">Rho/pp</th></tr></thead><tbody id="results-legs"></tbody></table></div></details>
+    </section>
+
+    <footer class="page-footer"><p>OptionsLab <span id="version"></span> · Una posición por subyacente y divisa. Datos introducidos manualmente; no hay ejecución de órdenes ni estimación de margen del bróker. P&amp;L neto de los costes registrados; financiación, impuestos y dividendos no registrados quedan excluidos.</p><p>Fechas con resolución diaria ACT/365: no es un motor intradía para opciones que vencen hoy. Las opciones americanas pueden ejercerse o asignarse antes del vencimiento. Los escenarios presuponen que las patas siguen abiertas.</p><noscript>Esta aplicación necesita JavaScript para editar posiciones y visualizar resultados. El motor de cálculo también se puede utilizar desde Python y desde la línea de comandos.</noscript></footer>
+  </div>
+</body>
+</html>
